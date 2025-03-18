@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر مضيف الوتبن</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .search-bar {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            opacity: 0.1;
+            font-size: 40px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            background: white;
+            padding: 20px;
+            width: 320px;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .invoice-item {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification.success { background: var(--success-color); }
+        .notification.error { background: var(--danger-color); }
+        .notification.info { background: var(--secondary-color); }
+
+        .customer-management {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .status.available { background: var(--success-color); color: white; }
+        .status.unavailable { background: var(--danger-color); color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <img src="logo.png" class="logo" alt="شعار المتجر">
+            <h1>مضيف الوتبن</h1>
+            <p>متجرك الإلكتروني الآمن</p>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div>
+                <button class="btn btn-primary" onclick="location.href='admin.html'">لوحة التحكم</button>
+                <button class="btn btn-primary" onclick="toggleSection('invoices')">الفواتير</button>
+                <button class="btn btn-primary" onclick="toggleSection('customers')">العملاء</button>
+            </div>
+            <input type="text" class="search-bar" placeholder="ابحث عن منتج..." oninput="searchProducts(event)">
+        </nav>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar">
+            <h3>🛒 سلة التسوق (<span id="cartCount">0</span>)</h3>
+            <div id="cartItems"></div>
+            <hr>
+            <h4>الإجمالي: <span id="totalPrice">0</span> ر.س</h4>
+            <button class="btn btn-success" style="width:100%;" onclick="checkout()">إتمام الشراء</button>
+        </div>
+
+        <!-- Invoices Section -->
+        <div id="invoices" class="invoices-section" style="display:none;">
+            <h2>الفواتير السابقة</h2>
+            <div class="filters">
+                <select id="dateFilter" onchange="filterInvoices()">
+                    <option value="all">جميع الفواتير</option>
+                    <option value="today">اليوم</option>
+                    <option value="week">الأسبوع</option>
+                    <option value="month">الشهر</option>
+                </select>
+            </div>
+            <div id="invoicesList" class="invoices-list"></div>
+        </div>
+
+        <!-- Customers Section -->
+        <div id="customers" class="customer-management" style="display:none;">
+            <h2>إدارة العملاء</h2>
+            <div id="customersList"></div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="productsGrid"></div>
+
+        <!-- Notifications -->
+        <div id="notification" class="notification"></div>
+    </div>
+
+<script>
+// بيانات النظام
+let products = JSON.parse(localStorage.getItem('products')) || [];
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+let customers = JSON.parse(localStorage.getItem('customers')) || [];
+
+// إعدادات التليجرام
+const BOT_TOKEN = '8119987442:AAEY-0a1zp6mtDtWPg0J8njLiovoXyXoZKo';
+const CHAT_ID = '6068899411';
+
+// وظائف الأساسية
+function showNotification(message, type = 'info') {
+    const notification = document.getElementById('notification');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = message;
+    notification.style.display = 'block';
+    setTimeout(() => { notification.style.display = 'none'; }, 5000);
+}
+
+function saveData() {
+    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('invoices', JSON.stringify(invoices));
+    localStorage.setItem('customers', JSON.stringify(customers));
+}
+
+// عرض المنتجات بشكل عشوائي
+function renderProducts() {
+    const grid = document.getElementById('productsGrid');
+    const shuffledProducts = products.sort(() => Math.random() - 0.5); // ترتيب عشوائي
+    grid.innerHTML = shuffledProducts.map(product => `
+        <div class="product-card">
+            <img src="${product.image}" class="product-image">
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+            <p class="price">${product.price} ر.س</p>
+            <div class="status ${product.status === 'available' ? 'available' : 'unavailable'}">
+                ${product.status === 'available' ? 'متوفر' : 'غير متوفر'}
+            </div>
+            <button class="btn btn-primary" onclick="addToCart('${product.id}')">إضافة للسلة</button>
+         
+        </div>
+    `).join('');
+}
+
+// نظام السلة
+function updateCart() {
+    document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById('totalPrice').textContent = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    const cartItems = document.getElementById('cartItems');
+    cartItems.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div>
+                <h4>${item.name}</h4>
+                <p>${item.quantity} × ${item.price} ر.س</p>
+            </div>
+            <button class="btn btn-danger" onclick="removeFromCart('${item.id}')">حذف</button>
+        </div>
+    `).join('');
+}
+
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return showNotification('المنتج غير موجود', 'error');
+    if (product.status !== 'available') return showNotification('المنتج غير متوفر', 'error');
+
+    const existing = cart.find(item => item.id === productId);
+    
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({...product, quantity: 1});
+    }
+    
+    updateCart();
+    saveData();
+    showNotification('تمت إضافة المنتج للسلة', 'success');
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCart();
+    saveData();
+    showNotification('تم حذف المنتج من السلة', 'error');
+}
+
+// نظام الفواتير
+async function checkout() {
+    if (cart.length === 0) return showNotification('السلة فارغة', 'error');
+    
+    const customerName = prompt('اسم العميل:');
+    if (!customerName) return;
+    
+    const invoice = {
+        id: Date.now(),
+        date: new Date().toLocaleString('ar-SA'),
+        customer: customerName,
+        items: [...cart],
+        total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+    };
+    
+    // حفظ الفاتورة
+    invoices.unshift(invoice);
+    saveData();
+    
+    // إرسال إلى التليجرام
+    const message = `فاتورة جديدة #${invoice.id}
+العميل: ${invoice.customer}
+المجموع: ${invoice.total} ر.س
+التاريخ: ${invoice.date}`;
+    
+    try {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message
+            })
+        });
+        showNotification('تم إرسال الفاتورة للتليجرام', 'success');
+    } catch (error) {
+        showNotification('فشل إرسال الفاتورة', 'error');
+    }
+    
+    // إعادة تعيين النظام
+    cart = [];
+    updateCart();
+    renderInvoices();
+    showNotification('تمت عملية الشراء بنجاح', 'success');
+}
+
+// عرض الفواتير
+function renderInvoices() {
+    const invoicesList = document.getElementById('invoicesList');
+    invoicesList.innerHTML = invoices.map(invoice => `
+        <div class="invoice-item">
+            <h4>الفاتورة #${invoice.id}</h4>
+            <p>العميل: ${invoice.customer}</p>
+            <p>التاريخ: ${invoice.date}</p>
+            <p>المجموع: ${invoice.total} ر.س</p>
+            <h5>المنتجات:</h5>
+            ${invoice.items.map(item => `
+                <div class="invoice-product">
+                    <p>${item.name} - ${item.quantity} × ${item.price} ر.س</p>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
+
+// تصفية الفواتير حسب التاريخ
+function filterInvoices() {
+    const filter = document.getElementById('dateFilter').value;
+    const now = new Date();
+    let filteredInvoices = [];
+
+    switch (filter) {
+        case 'today':
+            filteredInvoices = invoices.filter(invoice => {
+                const invoiceDate = new Date(invoice.date);
+                return invoiceDate.toDateString() === now.toDateString();
+            });
+            break;
+        case 'week':
+            const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+            filteredInvoices = invoices.filter(invoice => new Date(invoice.date) >= startOfWeek);
+            break;
+        case 'month':
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            filteredInvoices = invoices.filter(invoice => new Date(invoice.date) >= startOfMonth);
+            break;
+        default:
+            filteredInvoices = invoices;
+    }
+
+    document.getElementById('invoicesList').innerHTML = filteredInvoices.map(invoice => `
+        <div class="invoice-item">
+            <h4>الفاتورة #${invoice.id}</h4>
+            <p>العميل: ${invoice.customer}</p>
+            <p>التاريخ: ${invoice.date}</p>
+            <p>المجموع: ${invoice.total} ر.س</p>
+            <h5>المنتجات:</h5>
+            ${invoice.items.map(item => `
+                <div class="invoice-product">
+                    <p>${item.name} - ${item.quantity} × ${item.price} ر.س</p>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
+
+// تبديل الأقسام
+function toggleSection(sectionId) {
+    const sections = ['invoices', 'customers'];
+    sections.forEach(id => {
+        const section = document.getElementById(id);
+        if (id === sectionId) {
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            if (id === 'invoices') renderInvoices();
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+// البحث عن المنتجات
+function searchProducts(event) {
+    const query = event.target.value.toLowerCase();
+    const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query)
+    );
+    renderFilteredProducts(filteredProducts);
+}
+
+function renderFilteredProducts(filteredProducts) {
+    const grid = document.getElementById('productsGrid');
+    grid.innerHTML = filteredProducts.map(product => `
+        <div class="product-card">
+            <img src="${product.image}" class="product-image">
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+            <p class="price">${product.price} ر.س</p>
+            <div class="status ${product.status === 'available' ? 'available' : 'unavailable'}">
+                ${product.status === 'available' ? 'متوفر' : 'غير متوفر'}
+            </div>
+            <button class="btn btn-primary" onclick="addToCart('${product.id}')">إضافة للسلة</button>
+         
+          
+          </div>
+    `).join('');
+}
+
+// التهيئة الأولية
+function init() {
+    renderProducts();
+    updateCart();
+    showNotification('مرحبا بك في متجر مضيف الوتبن!', 'info');
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
