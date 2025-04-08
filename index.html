@@ -1,0 +1,141 @@
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحُماده  </title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+ 
+</head>
+<body>
+    <!-- القائمة الجانبية -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="sidebar-title"><i class="fas fa-bars"></i> قائمة التصنيفات</h3>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" id="allMembers"><i class="fas fa-users"></i> جميع الأعضاء</a></li>
+            <li><a href="#" id="youngMembers"><i class="fas fa-user-graduate"></i> الشباب <span class="category-badge status-young">0</span></a></li>
+            <li><a href="#" id="unmarriedMembers"><i class="fas fa-user"></i> العزابي <span class="category-badge status-unmarried">0</span></a></li>
+            <li><a href="#" id="marriedMembers"><i class="fas fa-user-friends"></i> المتزوجين <span class="category-badge status-married">0</span></a></li>
+            <li><a href="#" id="childMembers"><i class="fas fa-child"></i> الأطفال <span class="category-badge status-child">0</span></a></li>
+            <li><a href="#" id="aboutBtn"><i class="fas fa-info-circle"></i> حول البرنامج</a></li>
+        </ul>
+        
+        <div class="share-section">
+            <h4 class="share-title"><i class="fas fa-share-alt"></i> مشاركة الموقع</h4>
+            <div class="share-buttons">
+                <div class="share-btn facebook" title="مشاركة على فيسبوك">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
+                <div class="share-btn twitter" title="مشاركة على تويتر">
+                    <i class="fab fa-twitter"></i>
+                </div>
+                <div class="share-btn whatsapp" title="مشاركة على واتساب">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <div class="share-btn link" title="نسخ الرابط">
+                    <i class="fas fa-link"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- زر القائمة الجانبية للهواتف -->
+    <div class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="container">
+        <header>
+            <div class="controls">
+                <h1><i class="fas fa-tree"></i> نسب عائلة الحُماده</h1>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="ابحث عن عضو في العائلة...">
+            <div id="searchResults"></div>
+        </div>
+        
+        <div id="breadcrumb" class="breadcrumb"></div>
+        
+        <div class="tree-container">
+            <div id="familyTree" class="tree"></div>
+        </div>
+        
+        <div class="floating-buttons">
+            <button class="floating-btn" id="zoomInBtn" title="تكبير"><i class="fas fa-search-plus"></i></button>
+            <button class="floating-btn" id="zoomOutBtn" title="تصغير"><i class="fas fa-search-minus"></i></button>
+            <button class="floating-btn" id="resetBtn" title="إعادة تعيين"><i class="fas fa-home"></i></button>
+            <button class="floating-btn" id="shareMemberBtn" title="مشاركة العضو"><i class="fas fa-share-alt"></i></button>
+        </div>
+        
+        <div class="member-details" id="memberDetails">
+            <div class="details-card" id="detailsCard">
+                <button class="details-close" id="detailsClose"><i class="fas fa-times"></i></button>
+                <img class="details-image" id="detailsImage" src="" alt="">
+                <h2 class="details-name" id="detailsName"></h2>
+                <div class="details-dates" id="detailsDates"></div>
+                <div class="details-age" id="detailsAge"></div>
+                <div class="details-status" id="detailsStatus"></div>
+                <div class="details-description" id="detailsDescription"></div>
+                
+                <div class="details-family">
+                    <h3 class="family-title"><i class="fas fa-users"></i> العائلة</h3>
+                    <div id="familyMembersList"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- بطاقة المشاركة -->
+        <div class="share-card" id="shareCard">
+            <img src="" alt="صورة العضو" class="share-card-image" id="shareCardImage">
+            <div class="share-card-name" id="shareCardName"></div>
+            <div class="share-card-url" id="shareCardUrl"></div>
+            <div class="share-card-buttons">
+                <button class="share-card-btn copy" id="copyShareUrl"><i class="fas fa-copy"></i> نسخ الرابط</button>
+                <button class="share-card-btn close" id="closeShareCard"><i class="fas fa-times"></i> إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-modal" id="aboutModal">
+        <div class="about-content">
+            <div class="about-header">
+                <img src="https://via.placeholder.com/150" alt="صورة المطور" class="developer-img">
+                <h3>مطور البرنامج</h3>
+                <div class="social-links">
+                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="about-body">
+                <p class="about-text">
+                    "أنا طالب شغوف وطموح، بدأت رحلتي في البرمجة منذ عامين. 
+                    خلال هذه الفترة، تعلمت الكثير بفضل الله وتحديات لا تحصى. 
+                    هذا التطبيق هو ثمرة جهودي وأريد أن يكون رمزًا لوحدة عائلتنا الكريمة،
+                    وأدعو الله أن يكون نافعًا للجميع."
+                </p>
+                <div class="inspiration-section">
+                    <i class="fas fa-lightbulb"></i>
+                    <h4>عبد المجيد تحياتي لكم🤝</h4>
+                    <p>الهدف من أنشاء الموقع: الرغبة في توثيق الروابط العائلية وتطوير مهاراتي البرمجية</p>
+                </div>
+            </div>
+            <button class="about-close" id="aboutClose"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    
+    <script src="script.js">
+      
+    </script>
+</body>
+</html>
